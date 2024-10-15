@@ -28,3 +28,22 @@ except Exception as e:
 
 #####################################################################################
 
+# Converte MP3 para WAV (se necessário)
+audio_file = "audio.webm"
+audio = AudioSegment.from_mp3(audio_file)
+audio.export("audio.wav", format="wav")
+
+# Cria um reconhecedor
+recognizer = sr.Recognizer()
+
+# Transcreve o áudio
+with sr.AudioFile("audio.wav") as source:
+    audio_data = recognizer.record(source)
+    try:
+        # Use o Google Web Speech API
+        text = recognizer.recognize_google(audio_data, language='pt-BR')
+        print("Transcrição:", text)
+    except sr.UnknownValueError:
+        print("Não consegui entender o áudio.")
+    except sr.RequestError as e:
+        print(f"Erro ao solicitar resultados do serviço de reconhecimento; {e}")
